@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>[Roxette] — Data Analytics Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6F7F2;
+    --paper-alt:#EEF0EA;
+    --ink:#16202A;
+    --ink-soft:#5B6570;
+    --grid-line:#D8DCD3;
+    --teal:#1F8A70;
+    --teal-soft:#E3F1EC;
+    --amber:#E8A33D;
+    --amber-soft:#FBEEDA;
+    --coral:#D9534F;
+    --white:#FFFFFF;
+    --excel:#1D6F42;
+    --tableau:#1F77B4;
+    --powerbi:#C99A06;
+    --radius:10px;
+    --shadow: 0 1px 2px rgba(22,32,42,.04), 0 8px 24px rgba(22,32,42,.06);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  body{
+    margin:0;
+    font-family:'Inter', sans-serif;
+    color:var(--ink);
+    background-color:var(--paper);
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 42px 42px;
+    background-attachment: fixed;
+    padding-bottom:64px; /* space for fixed sheet-tab bar */
+  }
+
+  h1,h2,h3{
+    font-family:'Space Grotesk', sans-serif;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+
+  a{color:inherit;}
+  .mono{font-family:'IBM Plex Mono', monospace;}
+
+  .wrap{
+    max-width:1080px;
+    margin:0 auto;
+    padding:0 28px;
+  }
+
+  /* -------- visible focus for accessibility -------- */
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--teal);
+    outline-offset:3px;
+    border-radius:4px;
+  }
+
+  /* ================= TOP CHROME (title bar + formula bar) ================= */
+  .app-chrome{
+    background:var(--white);
+    border-bottom:1px solid var(--grid-line);
+  }
+  .title-bar{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 28px;
+    max-width:1080px;
+    margin:0 auto;
+    border-bottom:1px solid var(--grid-line);
+  }
+  .dots{display:flex; gap:6px;}
+  .dots span{
+    width:10px; height:10px; border-radius:50%;
+    background:var(--grid-line);
+  }
+  .dots span:nth-child(1){background:#E8A33D;}
+  .dots span:nth-child(2){background:#1F8A70;}
+  .dots span:nth-child(3){background:#D9534F;}
+  .filename{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    color:var(--ink-soft);
+  }
+  .formula-bar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:10px 28px;
+    max-width:1080px;
+    margin:0 auto;
+  }
+  .fx{
+    font-family:'IBM Plex Mono', monospace;
+    font-style:italic;
+    color:var(--ink-soft);
+    font-size:13px;
+  }
+  .formula-text{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    color:var(--teal);
+    white-space:nowrap;
+    overflow:hidden;
+    border-right:2px solid var(--teal);
+    padding-right:4px;
+    animation: caret 1s steps(1) infinite;
+  }
+  @keyframes caret{
+    50%{ border-color:transparent; }
+  }
+
+  /* ================= NAV / cell-ref eyebrows ================= */
+  .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    color:var(--teal);
+    background:var(--teal-soft);
+    border:1px solid #CBE6DD;
+    padding:4px 10px;
+    border-radius:5px;
+    margin-bottom:14px;
+  }
+  .eyebrow::before{
+    content:"→";
+    color:var(--teal);
+  }
+
+  section{
+    padding:96px 0 24px;
+  }
+  section:first-of-type{padding-top:64px;}
+
+  /* ================= HERO ================= */
+  .hero{
+    padding:76px 0 88px;
+  }
+  .hero-kicker{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    margin-bottom:18px;
+  }
+  .hero h1{
+    font-size:clamp(38px, 6vw, 64px);
+    font-weight:700;
+    line-height:1.05;
+  }
+  .hero h1 .accent{color:var(--teal);}
+  .hero p.lead{
+    font-size:18px;
+    color:var(--ink-soft);
+    max-width:560px;
+    margin-top:20px;
+    line-height:1.6;
+  }
+  .hero-cta{
+    display:flex;
+    gap:14px;
+    margin-top:32px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-family:'Inter', sans-serif;
+    font-weight:600;
+    font-size:14.5px;
+    padding:12px 20px;
+    border-radius:8px;
+    text-decoration:none;
+    border:1px solid transparent;
+    cursor:pointer;
+  }
+  .btn-primary{
+    background:var(--ink);
+    color:var(--white);
+  }
+  .btn-primary:hover{background:#0E151C;}
+  .btn-ghost{
+    border:1px dashed #A9B1B8;
+    color:var(--ink-soft);
+    background:transparent;
+  }
+  .btn-ghost:hover{border-color:var(--teal); color:var(--teal);}
+
+  .hero-stats{
+    display:flex;
+    gap:0;
+    margin-top:56px;
+    border:1px solid var(--grid-line);
+    border-radius:var(--radius);
+    overflow:hidden;
+    background:var(--white);
+    max-width:640px;
+  }
+  .hero-stat{
+    flex:1;
+    padding:16px 20px;
+    border-right:1px solid var(--grid-line);
+  }
+  .hero-stat:last-child{border-right:none;}
+  .hero-stat .cell-ref{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    display:block;
+    margin-bottom:6px;
+  }
+  .hero-stat .val{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:20px;
+  }
+  .hero-stat .label{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin-top:2px;
+  }
+
+  /* ================= SECTION HEADS ================= */
+  .section-head{
+    margin-bottom:36px;
+  }
+  .section-head h2{
+    font-size:clamp(26px, 3.4vw, 34px);
+    font-weight:600;
+  }
+  .section-head p{
+    color:var(--ink-soft);
+    margin-top:10px;
+    max-width:560px;
+    line-height:1.6;
+    font-size:15.5px;
+  }
+
+  /* ================= ABOUT / SKILLS ================= */
+  .about-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:40px;
+  }
+  .about-copy p{
+    color:var(--ink-soft);
+    line-height:1.75;
+    font-size:15.5px;
+    margin:0 0 14px;
+  }
+  .about-copy .placeholder-note{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--amber);
+    background:var(--amber-soft);
+    border:1px dashed #E3C48A;
+    border-radius:6px;
+    padding:8px 12px;
+    display:inline-block;
+  }
+
+  .skill-group{margin-bottom:26px;}
+  .skill-group h3{
+    font-size:13px;
+    font-family:'IBM Plex Mono', monospace;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--ink-soft);
+    margin-bottom:12px;
+  }
+  .tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .tag{
+    font-size:13.5px;
+    font-weight:500;
+    padding:7px 13px;
+    border-radius:20px;
+    background:var(--white);
+    border:1px solid var(--grid-line);
+  }
+  .tag.tool{ background:var(--teal-soft); border-color:#CBE6DD; color:#0F5C49; }
+  .tag.method{ background:var(--amber-soft); border-color:#E3C48A; color:#8A5A0E; }
+  .tag.soft{ background:var(--paper-alt); border-color:var(--grid-line); color:var(--ink-soft); }
+
+  /* ================= PROJECTS ================= */
+  .project-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:24px;
+  }
+  .project-card{
+    background:var(--white);
+    border:1px solid var(--grid-line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .project-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 4px 8px rgba(22,32,42,.06), 0 16px 32px rgba(22,32,42,.10);
+  }
+  .card-tab{ height:5px; }
+  .card-tab.excel{background:var(--excel);}
+  .card-tab.tableau{background:var(--tableau);}
+  .card-tab.powerbi{background:var(--powerbi);}
+
+  .card-body{ padding:22px; display:flex; flex-direction:column; gap:12px; flex:1; }
+  .card-badge{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:.05em;
+    font-weight:600;
+    padding:4px 9px;
+    border-radius:5px;
+    width:fit-content;
+  }
+  .card-badge.excel{ background:#E7F2EC; color:var(--excel); }
+  .card-badge.tableau{ background:#E7F0F8; color:var(--tableau); }
+  .card-badge.powerbi{ background:#FBF3D9; color:#8A6D04; }
+
+  .project-card h3{
+    font-size:18px;
+    font-weight:600;
+  }
+  .project-card .desc{
+    font-size:14px;
+    color:var(--ink-soft);
+    line-height:1.6;
+  }
+  .insight{
+    font-size:13.5px;
+    font-style:italic;
+    color:var(--ink);
+    background:var(--paper-alt);
+    border-left:2px solid var(--teal);
+    padding:10px 12px;
+    line-height:1.55;
+  }
+  .link-slot{
+    margin-top:auto;
+    padding-top:8px;
+  }
+  .link-slot a{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    text-decoration:none;
+    border:1px dashed #B7BEC4;
+    border-radius:7px;
+    padding:9px 12px;
+  }
+  .link-slot a:hover{
+    border-color:var(--teal);
+    color:var(--teal);
+  }
+  .link-slot a::after{ content:"↗"; }
+
+  .add-project{
+    border:1px dashed #B7BEC4;
+    border-radius:var(--radius);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:14px;
+    padding:22px;
+    min-height:100%;
+  }
+
+  /* ================= CERTIFICATIONS ================= */
+  .cert-table{
+    width:100%;
+    border-collapse:collapse;
+    background:var(--white);
+    border:1px solid var(--grid-line);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .cert-table th{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color:var(--ink-soft);
+    text-align:left;
+    padding:12px 18px;
+    background:var(--paper-alt);
+    border-bottom:1px solid var(--grid-line);
+  }
+  .cert-table td{
+    padding:14px 18px;
+    font-size:14.5px;
+    border-bottom:1px solid var(--grid-line);
+    vertical-align:top;
+  }
+  .cert-table tr:last-child td{border-bottom:none;}
+  .cert-table tr:nth-child(even) td{background:#FBFBF9;}
+  .cert-table td.col-link a{
+    color:var(--teal);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    text-decoration:none;
+  }
+  .cert-table td.col-link a:hover{ text-decoration:underline; }
+  .cert-name{font-weight:600;}
+  .cert-issuer, .cert-date{ color:var(--ink-soft); }
+
+  /* ================= CONTACT / FOOTER ROW ================= */
+  .contact-row{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    border:1px solid var(--grid-line);
+    border-radius:var(--radius);
+    overflow:hidden;
+    background:var(--white);
+  }
+  .contact-cell{
+    padding:20px;
+    border-right:1px solid var(--grid-line);
+  }
+  .contact-cell:last-child{border-right:none;}
+  .contact-cell .col-letter{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    display:block;
+    margin-bottom:8px;
+  }
+  .contact-cell .field-label{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin-bottom:4px;
+  }
+  .contact-cell a, .contact-cell span.value{
+    font-size:14.5px;
+    font-weight:600;
+    text-decoration:none;
+    color:var(--ink);
+    word-break:break-word;
+  }
+  .contact-cell a:hover{ color:var(--teal); }
+
+  footer.legal{
+    text-align:center;
+    padding:36px 0 12px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+  }
+
+  /* ================= FIXED SHEET-TAB NAV ================= */
+  .sheet-tabs{
+    position:fixed;
+    left:0; right:0; bottom:0;
+    background:var(--white);
+    border-top:1px solid var(--grid-line);
+    display:flex;
+    align-items:center;
+    gap:2px;
+    padding:8px 16px;
+    overflow-x:auto;
+    z-index:50;
+  }
+  .sheet-tab{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    background:var(--paper-alt);
+    border:1px solid var(--grid-line);
+    border-bottom:none;
+    padding:8px 16px;
+    border-radius:6px 6px 0 0;
+    text-decoration:none;
+    white-space:nowrap;
+    transition: color .15s ease, background .15s ease;
+  }
+  .sheet-tab:hover{ color:var(--ink); }
+  .sheet-tab.active{
+    color:var(--teal);
+    background:var(--white);
+    border-color:var(--teal);
+    font-weight:600;
+    box-shadow: 0 -2px 0 var(--teal) inset;
+  }
+  .sheet-tabs .plus{
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--ink-soft);
+    padding:8px 10px;
+    font-size:14px;
+  }
+
+  /* ================= RESPONSIVE ================= */
+  @media (max-width: 860px){
+    .about-grid{ grid-template-columns:1fr; }
+    .project-grid{ grid-template-columns:1fr; }
+    .contact-row{ grid-template-columns:1fr 1fr; }
+    .contact-cell:nth-child(2){ border-right:none; }
+    .hero-stats{ flex-direction:column; }
+    .hero-stat{ border-right:none; border-bottom:1px solid var(--grid-line); }
+    .hero-stat:last-child{ border-bottom:none; }
+  }
+  @media (max-width: 520px){
+    .contact-row{ grid-template-columns:1fr; }
+    .contact-cell{ border-right:none; border-bottom:1px solid var(--grid-line); }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    .formula-text{ animation:none; border-right:none; }
+    .project-card{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ============ TOP CHROME ============ -->
+  <div class="app-chrome">
+    <div class="title-bar">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <span class="filename">portfolio.xlsx — [Your Name]</span>
+    </div>
+    <div class="formula-bar">
+      <span class="fx">fx</span>
+      <span class="formula-text mono" id="formulaText">=EXCEL("cleaned &amp; modeled the data")</span>
+    </div>
+  </div>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="overview">
+    <div class="wrap">
+      <div class="hero-kicker">Data Analytics Portfolio</div>
+      <h1>[Roxette] <br><span class="accent">turns raw data into insights.</span></h1>
+      <p class="lead">
+        [A computer science graduate with a passion for data visualization, I specialize in transforming complex datasets into actionable insights. My expertise spans across Excel, Tableau, Power BI, and SQL enabling me to craft interactive dashboards that drive informed decision-making.]
+      </p>
+      <div class="hero-cta">
+        <a href="#projects" class="btn btn-primary">View Projects</a>
+        <a href="/DA_Reyes.pdf" class="btn btn-ghost" target="_blank">[Download Resume] ↗</a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="cell-ref">A1</span>
+          <div class="val">[X]+</div>
+          <div class="label">Dashboards built</div>
+        </div>
+        <div class="hero-stat">
+          <span class="cell-ref">B1</span>
+          <div class="val">3</div>
+          <div class="label">Core tools: Excel, Tableau, Power BI</div>
+        </div>
+        <div class="hero-stat">
+          <span class="cell-ref">C1</span>
+          <div class="val">[X]</div>
+          <div class="label">Certifications earned</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ABOUT / SKILLS ============ -->
+  <section id="skills">
+    <div class="wrap">
+      <span class="eyebrow">B2</span>
+      <div class="section-head">
+        <h2>Skills</h2>
+        <p>Tools, techniques, and the working style behind the dashboards below.</p>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-copy">
+          <p>
+            [Add a short paragraph about your background — your education, current role or
+            job search focus, and what draws you to data analytics. Keep it to 3–4 sentences.]
+          </p>
+          <p>
+            [Optional second paragraph: a sentence on how you approach a new dataset or project,
+            e.g. your process from raw data to a finished dashboard.]
+          </p>
+          <span class="placeholder-note">✎ Replace this text with your own bio</span>
+        </div>
+
+        <div class="about-skills">
+          <div class="skill-group">
+            <h3>Tools &amp; Platforms</h3>
+            <div class="tags">
+              <span class="tag tool">Microsoft Excel</span>
+              <span class="tag tool">Tableau</span>
+              <span class="tag tool">Power BI</span>
+              <span class="tag tool">SQL</span>
+              <span class="tag tool">Google Sheets</span>
+              <span class="tag tool">[+ Add tool]</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <h3>Analysis &amp; Techniques</h3>
+            <div class="tags">
+              <span class="tag method">Data Cleaning</span>
+              <span class="tag method">Dashboard Design</span>
+              <span class="tag method">PivotTables &amp; DAX</span>
+              <span class="tag method">Data Storytelling</span>
+              <span class="tag method">[+ Add skill]</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <h3>Working Style</h3>
+            <div class="tags">
+              <span class="tag soft">Attention to Detail</span>
+              <span class="tag soft">Stakeholder Communication</span>
+              <span class="tag soft">Critical Thinking</span>
+              <span class="tag soft">[+ Add trait]</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROJECTS ============ -->
+  <section id="projects">
+    <div class="wrap">
+      <span class="eyebrow">C4</span>
+      <div class="section-head">
+        <h2>Featured dashboards</h2>
+        <p>A selection of visualization projects, one per tool. Duplicate a card to add more.</p>
+      </div>
+
+      <div class="project-grid">
+
+        <!-- Excel project -->
+        <article class="project-card">
+          <div class="card-tab excel"></div>
+          <div class="card-body">
+            <span class="card-badge excel">EXCEL</span>
+            <h3>[Project Title]</h3>
+            <p class="desc">[One or two sentences describing the dataset, the question you were
+              answering, and how the dashboard is built — e.g. PivotTables, slicers, formulas used.]</p>
+            <p class="insight">“[One key insight or finding this analysis uncovered.]”</p>
+            <div class="link-slot">
+              <a href="#">[Add link to your Excel file / dashboard]</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Tableau project -->
+        <article class="project-card">
+          <div class="card-tab tableau"></div>
+          <div class="card-body">
+            <span class="card-badge tableau">TABLEAU</span>
+            <h3>[Project Title]</h3>
+            <p class="desc">[One or two sentences describing the dataset, the question you were
+              answering, and the visuals or interactivity built into the dashboard.]</p>
+            <p class="insight">“[One key insight or finding this analysis uncovered.]”</p>
+            <div class="link-slot">
+              <a href="#">[Add your Tableau Public link]</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Power BI project -->
+        <article class="project-card">
+          <div class="card-tab powerbi"></div>
+          <div class="card-body">
+            <span class="card-badge powerbi">POWER BI</span>
+            <h3>[Project Title]</h3>
+            <p class="desc">[One or two sentences describing the dataset, data model, and DAX
+              measures behind the report.]</p>
+            <p class="insight">“[One key insight or finding this analysis uncovered.]”</p>
+            <div class="link-slot">
+              <a href="#">[Add your Power BI report link]</a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CERTIFICATIONS ============ -->
+  <section id="certifications">
+    <div class="wrap">
+      <span class="eyebrow">D9</span>
+      <div class="section-head">
+        <h2>Certifications</h2>
+        <p>Courses and credentials completed. Add rows as you finish new ones.</p>
+      </div>
+
+      <table class="cert-table">
+        <thead>
+          <tr>
+            <th>Certification</th>
+            <th>Issuer</th>
+            <th>Date</th>
+            <th>Credential</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cert-name">[Certification name]</td>
+            <td class="cert-issuer">[Issuing organization]</td>
+            <td class="cert-date">[Month, Year]</td>
+            <td class="col-link"><a href="#">View ↗</a></td>
+          </tr>
+          <tr>
+            <td class="cert-name">[Certification name]</td>
+            <td class="cert-issuer">[Issuing organization]</td>
+            <td class="cert-date">[Month, Year]</td>
+            <td class="col-link"><a href="#">View ↗</a></td>
+          </tr>
+          <tr>
+            <td class="cert-name">[Certification name]</td>
+            <td class="cert-issuer">[Issuing organization]</td>
+            <td class="cert-date">[Month, Year]</td>
+            <td class="col-link"><a href="#">View ↗</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section id="contact">
+    <div class="wrap">
+      <span class="eyebrow">E1</span>
+      <div class="section-head">
+        <h2>Get in touch</h2>
+        <p>Row 100 of the workbook — where to find me.</p>
+      </div>
+
+      <div class="contact-row">
+        <div class="contact-cell">
+          <span class="col-letter">A</span>
+          <div class="field-label">Email</div>
+          <a href="mailto:you@example.com">[you@example.com]</a>
+        </div>
+        <div class="contact-cell">
+          <span class="col-letter">B</span>
+          <div class="field-label">LinkedIn</div>
+          <a href="#">[Add LinkedIn URL]</a>
+        </div>
+        <div class="contact-cell">
+          <span class="col-letter">C</span>
+          <div class="field-label">GitHub</div>
+          <a href="#">[Add GitHub URL]</a>
+        </div>
+        <div class="contact-cell">
+          <span class="col-letter">D</span>
+          <div class="field-label">Location</div>
+          <span class="value">[City, Country]</span>
+        </div>
+      </div>
+
+      <footer class="legal">
+        © [Year] [Your Name]. Built with Excel, Tableau &amp; Power BI dashboards.
+      </footer>
+    </div>
+  </section>
+
+  <!-- ============ FIXED SHEET TABS (nav) ============ -->
+  <nav class="sheet-tabs" aria-label="Section navigation">
+    <a href="#overview" class="sheet-tab" data-tab="overview">Overview</a>
+    <a href="#skills" class="sheet-tab" data-tab="skills">Skills</a>
+    <a href="#projects" class="sheet-tab" data-tab="projects">Projects</a>
+    <a href="#certifications" class="sheet-tab" data-tab="certifications">Certifications</a>
+    <a href="#contact" class="sheet-tab" data-tab="contact">Contact</a>
+    <span class="plus">+</span>
+  </nav>
+
+<script>
+  // Cycle the hero formula bar between the three tools
+  const formulas = [
+    '=EXCEL("cleaned &amp; modeled the data")',
+    '=TABLEAU("built interactive dashboards")',
+    '=POWERBI("delivered insights to stakeholders")'
+  ];
+  const formulaEl = document.getElementById('formulaText');
+  let fIndex = 0;
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!prefersReduced) {
+    setInterval(() => {
+      fIndex = (fIndex + 1) % formulas.length;
+      formulaEl.innerHTML = formulas[fIndex];
+    }, 3200);
+  }
+
+  // Highlight active sheet tab on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const tabs = document.querySelectorAll('.sheet-tab');
+  const setActive = (id) => {
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === id));
+  };
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) setActive(entry.target.id);
+    });
+  }, { rootMargin: '-45% 0px -45% 0px' });
+  sections.forEach(s => observer.observe(s));
+  setActive('overview');
+</script>
+
+</body>
+</html>
